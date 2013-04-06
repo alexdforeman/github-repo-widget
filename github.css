@@ -1,0 +1,31 @@
+ul {
+    margin: 0;
+    padding: 2px;
+    list-style-type: none;
+}
+
+.github-sidebar {
+    border-size: 1px;
+    border-style: solid;
+    border-color: black;
+    width: 300px;
+}
+
+.github-sidebar-top {
+    margin: 0;
+    padding: 0;
+    border-bottom-style: solid;
+    border-size: 1px;
+    border-color: black;
+    height: 20px;
+    text-align: top;
+}
+
+.github_link {
+    text-decoration: none;
+    padding: 5px;
+}
+
+.github_link:hover { text-decoration: underline };
+
+.github_repo_name { font-style: bold; }

@@ -18,20 +18,20 @@ function parseResponse (response) {
 // this creates the full HTML
 function insertGitHubWidget () {
 
-    document.write("<div class=\"github-sidebar\">");
-    document.write("<div class=\"github-sidebar-top\">" +
+    document.write("<div id=\"github-sidebar\">");
+    document.write("<div id=\"github-sidebar-top\">" +
                    "<h2>Repositories<em> (" + gitHubSize + ")</em></h2></div>");
-    document.write("<ul class=\"github_list\">");
+    document.write("<ul id=\"github_list\">");
 
     for (var i = 0; i < repos.length; i++) {
         var repoName = repos[i]['name'];
 
-        document.write("<li class=\"github_public\">");
-        document.write("<a class=\"github_link\" ");
+        document.write("<li id=\"github_public\">");
+        document.write("<a id=\"github_link\" ");
         document.write("href=\"https://github.com/" + OWNER + "/" + repoName + "\" >");
-        document.write("<span class=\"github_public_repo\"></span>");
-        document.write("<span class=\"github_owner\" title=\"" + OWNER + "\" >" + OWNER + "</span>/");
-        document.write("<span class=\"github_repo_name\" title=\"" + repoName + "\" >" + repoName + "</span>");
+        document.write("<span id=\"github_public_repo\"></span>");
+        document.write("<span id=\"github_owner\" title=\"" + OWNER + "\" >" + OWNER + "</span>/");
+        document.write("<span id=\"github_repo_name\" title=\"" + repoName + "\" >" + repoName + "</span>");
         document.write("</a>");
         document.write("</li>");
     }

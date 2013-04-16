@@ -4,14 +4,14 @@ ul {
     list-style-type: none;
 }
 
-.github-sidebar {
+#github-sidebar {
     border-size: 1px;
     border-style: solid;
     border-color: black;
     width: 300px;
 }
 
-.github-sidebar-top {
+#github-sidebar-top {
     margin: 0;
     padding: 0;
     border-bottom-style: solid;
@@ -21,11 +21,11 @@ ul {
     text-align: top;
 }
 
-.github_link {
+#github_link {
     text-decoration: none;
     padding: 5px;
 }
 
-.github_link:hover { text-decoration: underline };
+#github_link:hover { text-decoration: underline };
 
-.github_repo_name { font-style: bold; }
+#github_repo_name { font-style: bold; }

@@ -1,40 +1,103 @@
-var OWNER = "alexdforeman";     // Change your owner here.
-var gitHubSize;
-var repos = [];
+var parseResponse = (function () {
+    'use strict';
+    var repos = [];
 
-// Parses the response from the script line into something usable
-function parseResponse (response) {
+    var parseResponse = (function () {
+        // Parses the response from the script line into something usable
+        return function (response) {
+            repos = response.data.map(function (repo) {
+                repos.push({
+                   name: repo.name,
+                   description: repo.description
+                });    
+            });
+        };
+    })();
 
-    for (var repoID in response.data) {
-        repo = response.data[repoID];
+    var createGitHubWidget = (function (window, document, owner, repos) {
+        function element(type, content, attributes) {
+            var result = document.createElement(type);
+                
 
-        repos.push(new Object({
-           name: repo['name']
-        }));
-    }
-    gitHubSize = repos.length;
-}
+            if (attributes !== null && attributes !== undefined) {
+                for (var attributeName in attributes) {
+                    if (attributes.hasOwnProperty(attributeName)) {
+                            result.setAttribute(
+                            attributeName,
+                            attributes[attributeName]
+                        );   
+                    }
+                }
+            }
 
-// this creates the full HTML
-function insertGitHubWidget () {
+            if (content !== null && content !== undefined) {
+                result.appendChild(document.createTextNode(content));
+            }
+            
+            return result;
+        }
 
-    document.write("<div id=\"github-sidebar\">");
-    document.write("<div id=\"github-sidebar-top\">" +
-                   "<h2>Repositories<em> (" + gitHubSize + ")</em></h2></div>");
-    document.write("<ul id=\"github_list\">");
+        function createListItem(document, user, repository) {
+            var name = repository.name,
+                repoUrl = 'https://github.com/' + user + '/' + name;
 
-    for (var i = 0; i < repos.length; i++) {
-        var repoName = repos[i]['name'];
+            var li = element('li'),
+                a = element('a', null, {href: repoUrl}),
+                content = element('div', null, {class: 'content'}),
+                owner = element('span', user + '/', {'class': 'owner', 'title': user}),
+                repo = element('span', name, {'class': 'repo', 'title': name}),
+                description = element(
+                        'span',
+                        repository.description,
+                        {'class': 'description', title: repository.description}
+                    );
 
-        document.write("<li id=\"github_public\">");
-        document.write("<a id=\"github_link\" ");
-        document.write("href=\"https://github.com/" + OWNER + "/" + repoName + "\" >");
-        document.write("<span id=\"github_public_repo\"></span>");
-        document.write("<span id=\"github_owner\" title=\"" + OWNER + "\" >" + OWNER + "</span>/");
-        document.write("<span id=\"github_repo_name\" title=\"" + repoName + "\" >" + repoName + "</span>");
-        document.write("</a>");
-        document.write("</li>");
-    }
-    document.write("</ul>");
-    document.write("</div>");
-}
+            a.appendChild(owner);
+            a.appendChild(repo);
+            content.appendChild(a);
+            content.appendChild(description);
+            li.appendChild(content);
+            return li;
+        }
+
+        // this creates the full HTML
+        return (function (document, owner, repos, parent) {
+            console.debug("Rendering");
+            var sidebar = element('div', null, {'class': 'github sidebar'}),
+                header = element('header', 'Repositories (' + repos.length + ')'),
+                repositories = element('ul', null, {'class': 'github repositories'});
+
+            sidebar.appendChild(header);
+            sidebar.appendChild(repositories);
+
+            repos.map(createListItem.bind(null, document, owner)).forEach(function (li) {
+                repositories.appendChild(li);
+            });
+            parent.appendChild(sidebar);
+        }).bind(null, document, owner, repos);
+    })(
+        window,
+        document,
+        'alexdforeman',
+        repos
+    );
+
+    var parent = (function (selector) {
+        return document.querySelector(selector);
+    }).bind(null, 'aside.github');
+
+    var waitForGitHubElementToLoad = function () {
+        var p = parent();
+        if ((p !== null && p !== undefined) &&
+            (repos !== null && repos !== undefined)) {
+            createGitHubWidget(p);
+        } else {
+            setTimeout(waitForGitHubElementToLoad, 1500);
+        }
+    };
+
+    waitForGitHubElementToLoad();
+
+    return parseResponse;
+})();
+

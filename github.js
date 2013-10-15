@@ -2,50 +2,49 @@ var parseResponse = (function () {
     'use strict';
     var repos = [];
 
-
     var parseResponse = (function () {
         // Parses the response from the script line into something usable
         return function (response) {
-            for (var repoID in response.data) {
-                var repo = response.data[repoID];
-
+            repos = response.data.map(function (repo) {
                 repos.push({
                    name: repo.name,
                    description: repo.description
-                });
-            }
-        }
+                });    
+            });
+        };
     })();
 
     var createGitHubWidget = (function (window, document, owner, repos) {
         function element(type, content, attributes) {
-            var element = document.createElement(type);
+            var result = document.createElement(type);
                 
 
             if (attributes !== null && attributes !== undefined) {
                 for (var attributeName in attributes) {
-                    element.setAttribute(
-                        attributeName,
-                        attributes[attributeName]
-                    );
+                    if (attributes.hasOwnProperty(attributeName)) {
+                            result.setAttribute(
+                            attributeName,
+                            attributes[attributeName]
+                        );   
+                    }
                 }
             }
 
             if (content !== null && content !== undefined) {
-                element.appendChild(document.createTextNode(content));
+                result.appendChild(document.createTextNode(content));
             }
             
-            return element
+            return result;
         }
 
-        function createListItem(document, owner, repository) {
+        function createListItem(document, user, repository) {
             var name = repository.name,
-                repoUrl = 'https://github.com/' + owner + '/' + name;
+                repoUrl = 'https://github.com/' + user + '/' + name;
 
             var li = element('li'),
                 a = element('a', null, {href: repoUrl}),
                 content = element('div', null, {class: 'content'}),
-                owner = element('span', owner + '/', {'class': 'owner', 'title': owner}),
+                owner = element('span', user + '/', {'class': 'owner', 'title': user}),
                 repo = element('span', name, {'class': 'repo', 'title': name}),
                 description = element(
                         'span',
@@ -55,8 +54,8 @@ var parseResponse = (function () {
 
             a.appendChild(owner);
             a.appendChild(repo);
-            content.appendChild(a)
-            content.appendChild(description)
+            content.appendChild(a);
+            content.appendChild(description);
             li.appendChild(content);
             return li;
         }
@@ -95,10 +94,10 @@ var parseResponse = (function () {
         } else {
             setTimeout(waitForGitHubElementToLoad, 1500);
         }
-    }
+    };
 
     waitForGitHubElementToLoad();
 
     return parseResponse;
-})()
+})();
 

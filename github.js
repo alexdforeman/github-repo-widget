@@ -47,7 +47,7 @@ var parseResponse = (function () {
                 owner = element('span', user + '/', {'class': 'owner', 'title': user}),
                 repo = element('span', name, {'class': 'repo', 'title': name}),
                 description = element(
-                        'span',
+                        'p',
                         repository.description,
                         {'class': 'description', title: repository.description}
                     );
